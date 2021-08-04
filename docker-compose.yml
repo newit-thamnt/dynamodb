@@ -1,0 +1,41 @@
+version: '3.3'
+
+services:
+  aws-webservice:
+    container_name: local_stack_service
+    image: localstack/localstack:0.12.6
+    environment:
+      - SERVICES=s3,lambda,secretsmanager,apigateway
+      - LAMBDA_EXECUTOR=docker-reuse
+      - START_WEB=false
+      - LAMBDA_REMOTE_DOCKER=false
+      - DATA_DIR=/tmp/localstack/data
+      - EXTRA_CORS_ALLOWED_HEADERS=*
+    volumes:
+      - '${TMPDIR:-/tmp/localstack}:/tmp/localstack'
+    ports:
+      - 4566:4566
+
+  #dynamo db
+  dynamodb:
+    image: amazon/dynamodb-local:1.13.0
+    container_name: dynamodb
+    ports:
+      - 4569:8000
+    volumes:
+      - ./dynamodb-data:/data
+    entrypoint:
+      - java
+      - -jar
+      - DynamoDBLocal.jar
+      - -sharedDb
+      - -dbPath
+      - /data
+  # dynamo db admin
+  dynamodbAdmin:
+    container_name: dynamodb_admin
+    image: aaronshaf/dynamodb-admin
+    ports:
+      - 8001:8001
+    environment:
+      - 'DYNAMO_ENDPOINT=dynamodb:8000'

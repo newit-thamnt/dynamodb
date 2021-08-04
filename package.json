@@ -1,0 +1,11 @@
+{
+    "name": "dynamodb",
+    "version": "1.0.0",
+    "description": "dynamodb",
+    "private": true,
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "aws-sdk": "^2.525.0"
+    }
+}
